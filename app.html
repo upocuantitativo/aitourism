@@ -759,56 +759,56 @@
                     <div class="control-grid">
                         <div class="slider-container">
                             <div class="slider-label">
-                                <label><strong>Tourism Competitiveness</strong></label>
-                                <span id="competitivenessValue">50</span>
+                                <label><strong>Tourism Performance</strong></label>
+                                <span id="tourismPerformanceValue">75</span>
                             </div>
-                            <input type="range" id="competitivenessSlider" class="slider" min="0" max="100" value="50" oninput="updateProjection()">
-                            <small>Infrastructure, accessibility, and sustainability factors</small>
+                            <input type="range" id="tourismPerformanceSlider" class="slider" min="0" max="100" value="75" oninput="updateProjection()">
+                            <small>Overall tourism performance index and regional metrics</small>
                         </div>
 
                         <div class="slider-container">
                             <div class="slider-label">
-                                <label><strong>Tourism Satisfaction</strong></label>
-                                <span id="satisfactionValue">65</span>
+                                <label><strong>Room Occupancy Rate (%)</strong></label>
+                                <span id="occupancyRateValue">68</span>
                             </div>
-                            <input type="range" id="satisfactionSlider" class="slider" min="0" max="100" value="65" oninput="updateProjection()">
-                            <small>Customer reviews, rankings, and service quality</small>
+                            <input type="range" id="occupancyRateSlider" class="slider" min="0" max="100" value="68" oninput="updateProjection()">
+                            <small>Hotel and accommodation occupancy percentage</small>
                         </div>
 
                         <div class="slider-container">
                             <div class="slider-label">
-                                <label><strong>Economic Environment</strong></label>
-                                <span id="economicValue">45</span>
+                                <label><strong>Tourism Competitiveness Index</strong></label>
+                                <span id="competitivenessIndexValue">82</span>
                             </div>
-                            <input type="range" id="economicSlider" class="slider" min="0" max="100" value="45" oninput="updateProjection()">
-                            <small>GDP growth, inflation, and economic stability</small>
+                            <input type="range" id="competitivenessIndexSlider" class="slider" min="0" max="100" value="82" oninput="updateProjection()">
+                            <small>Competitiveness ranking and infrastructure quality</small>
                         </div>
 
                         <div class="slider-container">
                             <div class="slider-label">
-                                <label><strong>Marketing Investment</strong></label>
-                                <span id="marketingValue">40</span>
+                                <label><strong>Current Rank Reviews</strong></label>
+                                <span id="rankReviewsValue">45</span>
                             </div>
-                            <input type="range" id="marketingSlider" class="slider" min="0" max="100" value="40" oninput="updateProjection()">
-                            <small>Tourism promotion and marketing spending</small>
+                            <input type="range" id="rankReviewsSlider" class="slider" min="0" max="100" value="45" oninput="updateProjection()">
+                            <small>Tourist review rankings and satisfaction scores</small>
                         </div>
 
                         <div class="slider-container">
                             <div class="slider-label">
-                                <label><strong>Infrastructure Development</strong></label>
-                                <span id="infrastructureValue">55</span>
+                                <label><strong>Total Facilities</strong></label>
+                                <span id="totalFacilitiesValue">60</span>
                             </div>
-                            <input type="range" id="infrastructureSlider" class="slider" min="0" max="100" value="55" oninput="updateProjection()">
-                            <small>Transportation, accommodation, and digital infrastructure</small>
+                            <input type="range" id="totalFacilitiesSlider" class="slider" min="0" max="100" value="60" oninput="updateProjection()">
+                            <small>Tourism facilities and infrastructure availability</small>
                         </div>
 
                         <div class="slider-container">
                             <div class="slider-label">
-                                <label><strong>Environmental Quality</strong></label>
-                                <span id="environmentValue">70</span>
+                                <label><strong>Tourism Employment</strong></label>
+                                <span id="tourismEmploymentValue">72</span>
                             </div>
-                            <input type="range" id="environmentSlider" class="slider" min="0" max="100" value="70" oninput="updateProjection()">
-                            <small>Air quality, sustainability, and environmental protection</small>
+                            <input type="range" id="tourismEmploymentSlider" class="slider" min="0" max="100" value="72" oninput="updateProjection()">
+                            <small>Tourism sector employment levels and job creation</small>
                         </div>
                     </div>
                 </div>
@@ -1145,28 +1145,36 @@
 
         // Projection Tab Functions
         function updateProjection() {
-            // Update slider values
-            document.getElementById('competitivenessValue').textContent = document.getElementById('competitivenessSlider').value;
-            document.getElementById('satisfactionValue').textContent = document.getElementById('satisfactionSlider').value;
-            document.getElementById('economicValue').textContent = document.getElementById('economicSlider').value;
-            document.getElementById('marketingValue').textContent = document.getElementById('marketingSlider').value;
-            document.getElementById('infrastructureValue').textContent = document.getElementById('infrastructureSlider').value;
-            document.getElementById('environmentValue').textContent = document.getElementById('environmentSlider').value;
+            // Update slider values for new variables
+            document.getElementById('tourismPerformanceValue').textContent = document.getElementById('tourismPerformanceSlider').value;
+            document.getElementById('occupancyRateValue').textContent = document.getElementById('occupancyRateSlider').value;
+            document.getElementById('competitivenessIndexValue').textContent = document.getElementById('competitivenessIndexSlider').value;
+            document.getElementById('rankReviewsValue').textContent = document.getElementById('rankReviewsSlider').value;
+            document.getElementById('totalFacilitiesValue').textContent = document.getElementById('totalFacilitiesSlider').value;
+            document.getElementById('tourismEmploymentValue').textContent = document.getElementById('tourismEmploymentSlider').value;
 
-            // Calculate projections based on slider values
-            const competitiveness = parseInt(document.getElementById('competitivenessSlider').value);
-            const satisfaction = parseInt(document.getElementById('satisfactionSlider').value);
-            const economic = parseInt(document.getElementById('economicSlider').value);
-            const marketing = parseInt(document.getElementById('marketingSlider').value);
-            const infrastructure = parseInt(document.getElementById('infrastructureSlider').value);
-            const environment = parseInt(document.getElementById('environmentSlider').value);
+            // Calculate projections based on new variables
+            const tourismPerformance = parseInt(document.getElementById('tourismPerformanceSlider').value);
+            const occupancyRate = parseInt(document.getElementById('occupancyRateSlider').value);
+            const competitivenessIndex = parseInt(document.getElementById('competitivenessIndexSlider').value);
+            const rankReviews = parseInt(document.getElementById('rankReviewsSlider').value);
+            const totalFacilities = parseInt(document.getElementById('totalFacilitiesSlider').value);
+            const tourismEmployment = parseInt(document.getElementById('tourismEmploymentSlider').value);
 
-            // Simple projection calculation (in a real app, this would use the actual model)
-            const avgScore = (competitiveness + satisfaction + economic + marketing + infrastructure + environment) / 6;
-            const employmentChange = ((avgScore - 50) * 0.5).toFixed(1);
-            const revenueChange = ((avgScore - 50) * 0.35).toFixed(1);
-            const visitorChange = ((avgScore - 50) * 0.8).toFixed(1);
-            const confidence = (Math.abs(avgScore - 50) * 0.1 + 2).toFixed(1);
+            // Weighted projection calculation based on tourism model
+            const weightedScore = (
+                tourismPerformance * 0.25 +
+                occupancyRate * 0.20 +
+                competitivenessIndex * 0.20 +
+                rankReviews * 0.15 +
+                totalFacilities * 0.10 +
+                tourismEmployment * 0.10
+            );
+
+            const employmentChange = ((weightedScore - 50) * 0.6).toFixed(1);
+            const revenueChange = ((weightedScore - 50) * 0.45).toFixed(1);
+            const visitorChange = ((weightedScore - 50) * 0.75).toFixed(1);
+            const confidence = (Math.abs(weightedScore - 50) * 0.08 + 2.5).toFixed(1);
 
             document.getElementById('projectedEmployment').textContent = (employmentChange > 0 ? '+' : '') + employmentChange + '%';
             document.getElementById('projectedRevenue').textContent = (revenueChange > 0 ? '+' : '') + revenueChange + '%';
@@ -1203,12 +1211,12 @@
         }
 
         function resetProjection() {
-            document.getElementById('competitivenessSlider').value = 50;
-            document.getElementById('satisfactionSlider').value = 65;
-            document.getElementById('economicSlider').value = 45;
-            document.getElementById('marketingSlider').value = 40;
-            document.getElementById('infrastructureSlider').value = 55;
-            document.getElementById('environmentSlider').value = 70;
+            document.getElementById('tourismPerformanceSlider').value = 75;
+            document.getElementById('occupancyRateSlider').value = 68;
+            document.getElementById('competitivenessIndexSlider').value = 82;
+            document.getElementById('rankReviewsSlider').value = 45;
+            document.getElementById('totalFacilitiesSlider').value = 60;
+            document.getElementById('tourismEmploymentSlider').value = 72;
 
             updateProjection();
         }
@@ -1403,9 +1411,9 @@
                 yaxis: { title: 'Employment Index' }
             });
 
-            // Sensitivity Analysis
-            const variables = ['Competitiveness', 'Satisfaction', 'Economic', 'Marketing', 'Infrastructure', 'Environment'];
-            const sensitivity = [0.24, 0.31, 0.18, 0.12, 0.28, 0.15];
+            // Sensitivity Analysis - Updated for tourism model variables
+            const variables = ['Tourism Performance', 'Room Occupancy', 'Competitiveness Index', 'Rank Reviews', 'Total Facilities', 'Tourism Employment'];
+            const sensitivity = [0.25, 0.20, 0.20, 0.15, 0.10, 0.10];
 
             const sensitivityData = [{
                 x: variables,
