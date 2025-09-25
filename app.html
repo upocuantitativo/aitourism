@@ -1255,7 +1255,7 @@
             const annotations = [
                 {
                     x: 1.5, y: 1.75,
-                    text: '0.67',
+                    text: '0.884',
                     showarrow: false,
                     font: { size: 14, color: '#2c3e50', family: 'Inter, sans-serif' },
                     bgcolor: 'white',
@@ -1296,13 +1296,13 @@
             // Path Coefficients - Updated with correct values
             const pathData = [{
                 x: ['Competitive Efficiency → Tourist Satisfaction', 'Tourist Satisfaction → Tourism Employment'],
-                y: [0.67, 0.58],
+                y: [0.884, 0.58],
                 type: 'bar',
                 marker: {
                     color: ['#3498db', '#e74c3c'],
                     line: { color: '#2c3e50', width: 1 }
                 },
-                text: ['β = 0.67', 'β = 0.58'],
+                text: ['β = 0.884', 'β = 0.58'],
                 textposition: 'outside'
             }];
 
@@ -1316,17 +1316,37 @@
                 plot_bgcolor: '#f8f9fa'
             });
 
-            // Factor Loadings
+            // Factor Loadings - Updated with real model values
             const factorData = [{
-                x: ['Infrastructure', 'Accessibility', 'Sustainability', 'Rankings', 'Reviews', 'Facilities'],
-                y: [0.85, 0.78, 0.72, 0.91, 0.87, 0.69],
+                x: [
+                    'Tourism Competitiveness Index',
+                    'Current Rank (position)',
+                    'Total Facilities (score)',
+                    'Reviews (score)',
+                    'Room Occupancy Rate (%)',
+                    'Tourism Employment (jobs)',
+                    'Tourism Performance'
+                ],
+                y: [0.951, 0.863, 0.969, 0.954, 0.975, 1.000, 0.959],
                 type: 'bar',
-                marker: { color: '#9b59b6' }
+                marker: {
+                    color: '#9b59b6',
+                    line: { color: '#2c3e50', width: 1 }
+                },
+                text: ['0.951', '0.863', '0.969', '0.954', '0.975', '1.000', '0.959'],
+                textposition: 'outside'
             }];
 
             Plotly.newPlot('factorLoadings', factorData, {
-                title: 'Factor Loadings',
-                yaxis: { title: 'Loading Value' }
+                title: 'Factor Loadings - Tourism Model Variables',
+                yaxis: {
+                    title: 'Loading Value',
+                    range: [0, 1.1]
+                },
+                xaxis: {
+                    tickangle: -45
+                },
+                plot_bgcolor: '#f8f9fa'
             });
 
             // Regional Performance
