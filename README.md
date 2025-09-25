@@ -1,51 +1,88 @@
-# Smart Tourism Management System
+# AI Tourism Management System
 
-## Sistema de Gestión Inteligente del Turismo basado en PLS-SEM e IA
+## Intelligent Tourism Impact Analysis using PLS-SEM and Artificial Intelligence
 
-Un sistema automatizado innovador que combina análisis empírico mediante PLS-SEM con inteligencia artificial adaptativa para la gestión automatizada del impacto del turismo sobre el empleo.
+An innovative automated system that combines empirical analysis using PLS-SEM with adaptive artificial intelligence for automated management of tourism impact on employment.
 
 ![Sistema](https://img.shields.io/badge/Sistema-Tourism%20Management-blue)
 ![Python](https://img.shields.io/badge/Python-3.8%2B-green)
 ![Dash](https://img.shields.io/badge/Dashboard-Dash-orange)
 ![AI](https://img.shields.io/badge/AI-Claude%20%2B%20Local-purple)
 
-## 🎯 Características Principales
+## 🎯 Key Features
 
-### 📊 Modelo PLS-SEM Integrado
-- **Análisis estructural**: Relaciones causales entre Competitividad Turística → Satisfacción → Empleo Turístico
-- **Validación estadística**: Bootstrap, confiabilidad (Cronbach's α), validez convergente y discriminante
-- **Efectos directos e indirectos**: Medición completa del impacto de políticas turísticas
+### 📊 Integrated PLS-SEM Model
+- **Structural analysis**: Causal relationships between Tourism Competitiveness → Satisfaction → Tourism Employment
+- **Statistical validation**: Bootstrap, reliability (Cronbach's α), convergent and discriminant validity
+- **Direct and indirect effects**: Complete measurement of tourism policy impact
 
-### 🤖 Agentes IA Automatizados
-- **Análisis inteligente**: Agentes basados en Claude API y análisis local
-- **Recomendaciones automáticas**: Generación de insights y políticas adaptativas
-- **Aprendizaje continuo**: Sistema de retroalimentación para mejora constante
+### 🤖 Automated AI Agents
+- **Intelligent analysis**: Agents based on Claude API and local analysis
+- **Automatic recommendations**: Generation of insights and adaptive policies
+- **Continuous learning**: Feedback system for constant improvement
 
-### 📈 Recolección Automática de Datos
-- **INE**: Ocupación hotelera, empleo turístico, establecimientos
-- **TripAdvisor**: Valoraciones, rankings, facilidades turísticas
-- **Exceltur-MONITUR**: Índices de competitividad turística regional
+### 📈 Automatic Data Collection
+- **INE**: Hotel occupancy, tourism employment, establishments
+- **TripAdvisor**: Ratings, rankings, tourism facilities
+- **Exceltur-MONITUR**: Regional tourism competitiveness indices
 
-### 🖥️ Dashboard Interactivo
-- **Visualización en tiempo real**: KPIs, series temporales, correlaciones
-- **Modelo PLS-SEM visual**: Diagrama interactivo con coeficientes estructurales
-- **Panel de control regional**: Selección de región, períodos, exportación de reportes
+### 🖥️ Interactive Dashboard & Web Interface
+- **Real-time visualization**: KPIs, time series, correlations
+- **Visual PLS-SEM model**: Interactive diagram with structural coefficients
+- **Regional control panel**: Region selection, periods, report export
+- **Interactive HTML Interface**: Four-tab interface (Data, Model, Results, Projection) with sensitivity analysis
 
-## 🏗️ Arquitectura del Sistema
+## 🏗️ System Architecture
 
 ```
-├── 📁 data_collectors/      # Recolectores automatizados de datos
-├── 📁 models/              # Analizador PLS-SEM y modelos estadísticos  
-├── 📁 agents/              # Agentes IA para análisis y recomendaciones
-├── 📁 dashboard/           # Dashboard web interactivo
-├── 📁 data/               # Base de datos y almacenamiento
-├── 📁 config/             # Configuraciones del sistema
-├── 📁 logs/               # Logs del sistema
-├── 📁 exports/            # Reportes y exportaciones
-└── 📄 main.py             # Orquestador principal del sistema
+├── 📁 data_collectors/      # Automated data collectors
+├── 📁 models/              # PLS-SEM analyzer and statistical models
+├── 📁 agents/              # AI agents for analysis and recommendations
+├── 📁 dashboard/           # Interactive web dashboard
+├── 📁 data/               # Database and storage
+├── 📁 config/             # System configurations
+├── 📁 logs/               # System logs
+├── 📁 exports/            # Reports and exports
+├── 📄 app.html            # Interactive HTML interface
+└── 📄 main.py             # Main system orchestrator
 ```
 
-## 🚀 Instalación Rápida
+## 🌐 Web Interface
+
+The system now includes a comprehensive HTML interface with four main tabs:
+
+### 📊 Data Tab
+- Upload tourism data files (Excel, CSV)
+- Configure data sources (INE, Exceltur, TripAdvisor)
+- Data validation and preprocessing options
+- Real-time data preview
+
+### ⚙️ Model Tab
+- PLS-SEM model configuration
+- AI analysis parameters
+- Regional and temporal settings
+- Model generation and validation
+
+### 📈 Results Tab (Default)
+- Model performance metrics
+- Interactive PLS-SEM diagram
+- Regional tourism performance charts
+- Path coefficients and factor loadings
+- Time series analysis and correlation matrices
+
+### 🔮 Projection Tab
+- Sensitivity analysis with interactive sliders
+- Variable impact controls:
+  - Tourism Competitiveness
+  - Tourism Satisfaction
+  - Economic Environment
+  - Marketing Investment
+  - Infrastructure Development
+  - Environmental Quality
+- Real-time projection updates
+- Scenario comparison and export
+
+## 🚀 Quick Installation
 
 ### ⚡ Solución Inmediata (Si hay errores)
 
@@ -476,4 +513,26 @@ El **Smart Tourism Management System** representa una solución innovadora que a
 ✅ **Dashboard interactivo** para visualización y control  
 ✅ **Sistema autónomo** con mínima intervención manual  
 
-**Impacto esperado**: Mejora en la toma de decisiones de políticas turísticas regionales, optimización del empleo turístico, y sostenibilidad socioeconómica de destinos turísticos.
+**Expected Impact**: Improvement in regional tourism policy decision-making, optimization of tourism employment, and socioeconomic sustainability of tourism destinations.
+
+---
+
+## 🌐 Quick Start with HTML Interface
+
+To access the new interactive HTML interface:
+
+1. **Open the interface**:
+   ```bash
+   # Simply open app.html in your web browser
+   start app.html  # Windows
+   open app.html   # macOS
+   xdg-open app.html  # Linux
+   ```
+
+2. **Use the tabs**:
+   - **Data**: Upload and manage your tourism data
+   - **Model**: Configure PLS-SEM parameters and generate models
+   - **Results**: View comprehensive analysis results (default tab)
+   - **Projection**: Perform sensitivity analysis with interactive controls
+
+The interface is fully self-contained and works offline with sample data for demonstration purposes.
