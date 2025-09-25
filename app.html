@@ -1223,74 +1223,258 @@
 
         // Chart initialization functions
         function initializeResultsCharts() {
-            // Model Diagram - Based on tourism system structure
-            const modelData = [{
-                x: [1, 3, 2],
-                y: [2, 2, 1],
+            // Model Diagram - Complete system flow based on modelo.png structure
+            const systemComponents = [{
+                // Data Sources
+                x: [1, 1, 1, 1],
+                y: [4, 3.5, 3, 2.5],
                 mode: 'markers+text',
-                text: ['Competitive<br>Efficiency', 'Tourist<br>Satisfaction', 'Tourism<br>Employment'],
+                text: ['INE<br>Hotel Occupancy<br>Tourism Employment', 'TripAdvisor<br>Reviews & Rankings<br>Ratings & Facilities', 'Exceltur/MONITUR<br>Competitiveness Indices', 'External Data<br>Manual Input'],
+                textposition: 'middle right',
+                marker: {
+                    size: 60,
+                    color: '#3498db',
+                    symbol: 'square',
+                    line: { width: 2, color: '#2c3e50' }
+                },
+                type: 'scatter',
+                name: 'Data Sources',
+                showlegend: false
+            }, {
+                // Data Processing
+                x: [2.5],
+                y: [3.25],
+                mode: 'markers+text',
+                text: ['Data Collection<br>• Automated<br>• Hourly Updates<br>• Validation'],
                 textposition: 'middle center',
                 marker: {
                     size: 80,
-                    color: ['#3498db', '#e74c3c', '#27ae60'],
+                    color: '#e74c3c',
+                    symbol: 'square',
                     line: { width: 2, color: '#2c3e50' }
+                },
+                type: 'scatter',
+                name: 'Data Processing',
+                showlegend: false
+            }, {
+                // Database
+                x: [2.5],
+                y: [2],
+                mode: 'markers+text',
+                text: ['SQLite Database<br>• Normalized Data<br>• 19 Regions<br>• Historical Records'],
+                textposition: 'middle center',
+                marker: {
+                    size: 70,
+                    color: '#27ae60',
+                    symbol: 'square',
+                    line: { width: 2, color: '#2c3e50' }
+                },
+                type: 'scatter',
+                name: 'Database',
+                showlegend: false
+            }, {
+                // PLS-SEM Analysis
+                x: [4],
+                y: [3.5],
+                mode: 'markers+text',
+                text: ['PLS-SEM Model<br>• Structural Eq.<br>• Path Analysis<br>• R² = 0.766'],
+                textposition: 'middle center',
+                marker: {
+                    size: 80,
+                    color: '#9b59b6',
+                    symbol: 'square',
+                    line: { width: 2, color: '#2c3e50' }
+                },
+                type: 'scatter',
+                name: 'PLS-SEM',
+                showlegend: false
+            }, {
+                // AI Agents
+                x: [4],
+                y: [2.5],
+                mode: 'markers+text',
+                text: ['AI Agents<br>• Claude API<br>• Local ML<br>• Pattern Detection<br>• Recommendations'],
+                textposition: 'middle center',
+                marker: {
+                    size: 80,
+                    color: '#9b59b6',
+                    symbol: 'square',
+                    line: { width: 2, color: '#2c3e50' }
+                },
+                type: 'scatter',
+                name: 'AI Analysis',
+                showlegend: false
+            }, {
+                // Outputs
+                x: [5.5, 5.5, 5.5],
+                y: [4, 3, 2],
+                mode: 'markers+text',
+                text: ['Web Dashboard<br>• Real-time KPIs<br>• Auto Updates', 'Automated<br>Reports<br>• Daily Analysis<br>• Policy Export', 'REST API<br>• JSON/CSV<br>• Integration<br>• Programming'],
+                textposition: 'middle left',
+                marker: {
+                    size: 60,
+                    color: '#f39c12',
+                    symbol: 'square',
+                    line: { width: 2, color: '#2c3e50' }
+                },
+                type: 'scatter',
+                name: 'System Outputs',
+                showlegend: false
+            }];
+
+            // Flow arrows
+            const flowArrows = [{
+                x: [1.3, 2.2, 2.8, 3.7, 4.3, 5.2],
+                y: [3.25, 3.25, 2.6, 3, 3, 3],
+                mode: 'lines',
+                line: {
+                    color: '#34495e',
+                    width: 4,
+                    dash: 'solid'
                 },
                 type: 'scatter',
                 showlegend: false
             }, {
-                // Path arrows
-                x: [1, 2, 3, 2],
-                y: [2, 1.5, 2, 1.5],
+                // Connection from database to AI analysis
+                x: [2.8, 3.7],
+                y: [2, 2.5],
                 mode: 'lines',
                 line: {
-                    color: '#7f8c8d',
-                    width: 3,
+                    color: '#34495e',
+                    width: 4,
                     dash: 'solid'
                 },
                 type: 'scatter',
                 showlegend: false
             }];
 
-            // Add path coefficient annotations
+            // PLS-SEM structural relationships
+            const structuralModel = [{
+                x: [4, 4.8, 5.5],
+                y: [1.2, 1.2, 1.2],
+                mode: 'markers+text',
+                text: ['Competitive<br>Efficiency', 'Tourist<br>Satisfaction', 'Tourism<br>Employment'],
+                textposition: 'bottom center',
+                marker: {
+                    size: 50,
+                    color: ['#3498db', '#e74c3c', '#27ae60'],
+                    line: { width: 2, color: '#2c3e50' }
+                },
+                type: 'scatter',
+                showlegend: false
+            }, {
+                // Path from Competitive Efficiency to Tourist Satisfaction
+                x: [4.25, 4.55],
+                y: [1.2, 1.2],
+                mode: 'lines',
+                line: {
+                    color: '#3498db',
+                    width: 4
+                },
+                type: 'scatter',
+                showlegend: false
+            }, {
+                // Path from Tourist Satisfaction to Tourism Employment
+                x: [5.05, 5.25],
+                y: [1.2, 1.2],
+                mode: 'lines',
+                line: {
+                    color: '#e74c3c',
+                    width: 4
+                },
+                type: 'scatter',
+                showlegend: false
+            }];
+
+            const allData = [...systemComponents, ...flowArrows, ...structuralModel];
+
+            // Add annotations for path coefficients
             const annotations = [
                 {
-                    x: 1.5, y: 1.75,
-                    text: '0.884',
+                    x: 4.4, y: 1.3,
+                    text: 'β = 0.884',
                     showarrow: false,
-                    font: { size: 14, color: '#2c3e50', family: 'Inter, sans-serif' },
-                    bgcolor: 'white',
+                    font: { size: 12, color: '#2c3e50', family: 'Inter, sans-serif' },
+                    bgcolor: 'rgba(255,255,255,0.8)',
                     bordercolor: '#3498db',
                     borderwidth: 1
                 },
                 {
-                    x: 2.5, y: 1.75,
-                    text: '0.58',
+                    x: 5.15, y: 1.3,
+                    text: 'β = 0.58',
                     showarrow: false,
-                    font: { size: 14, color: '#2c3e50', family: 'Inter, sans-serif' },
-                    bgcolor: 'white',
+                    font: { size: 12, color: '#2c3e50', family: 'Inter, sans-serif' },
+                    bgcolor: 'rgba(255,255,255,0.8)',
                     bordercolor: '#e74c3c',
                     borderwidth: 1
+                },
+                // Section headers
+                {
+                    x: 1, y: 4.5,
+                    text: '<b>Data Sources</b>',
+                    showarrow: false,
+                    font: { size: 14, color: '#2c3e50', family: 'Inter, sans-serif' },
+                    bgcolor: 'rgba(52, 152, 219, 0.1)',
+                    bordercolor: '#3498db',
+                    borderwidth: 1
+                },
+                {
+                    x: 2.5, y: 4.5,
+                    text: '<b>Data Processing</b>',
+                    showarrow: false,
+                    font: { size: 14, color: '#2c3e50', family: 'Inter, sans-serif' },
+                    bgcolor: 'rgba(231, 76, 60, 0.1)',
+                    bordercolor: '#e74c3c',
+                    borderwidth: 1
+                },
+                {
+                    x: 4, y: 4.5,
+                    text: '<b>Intelligent Analysis</b>',
+                    showarrow: false,
+                    font: { size: 14, color: '#2c3e50', family: 'Inter, sans-serif' },
+                    bgcolor: 'rgba(155, 89, 182, 0.1)',
+                    bordercolor: '#9b59b6',
+                    borderwidth: 1
+                },
+                {
+                    x: 5.5, y: 4.5,
+                    text: '<b>System Outputs</b>',
+                    showarrow: false,
+                    font: { size: 14, color: '#2c3e50', family: 'Inter, sans-serif' },
+                    bgcolor: 'rgba(243, 156, 18, 0.1)',
+                    bordercolor: '#f39c12',
+                    borderwidth: 1
+                },
+                {
+                    x: 4.75, y: 0.8,
+                    text: '<b>PLS-SEM Structural Model</b>',
+                    showarrow: false,
+                    font: { size: 14, color: '#2c3e50', family: 'Inter, sans-serif' },
+                    bgcolor: 'rgba(255,255,255,0.9)',
+                    bordercolor: '#34495e',
+                    borderwidth: 2
                 }
             ];
 
-            Plotly.newPlot('modelDiagram', modelData, {
-                title: 'PLS-SEM Structural Model - Tourism Impact Analysis',
+            Plotly.newPlot('modelDiagram', allData, {
+                title: 'AI Tourism Management System - Complete Architecture & PLS-SEM Model',
                 showlegend: false,
                 xaxis: {
                     showgrid: false,
                     showticklabels: false,
                     zeroline: false,
-                    range: [0.5, 3.5]
+                    range: [0.5, 6]
                 },
                 yaxis: {
                     showgrid: false,
                     showticklabels: false,
                     zeroline: false,
-                    range: [0.5, 2.5]
+                    range: [0.5, 5]
                 },
                 annotations: annotations,
                 plot_bgcolor: '#f8f9fa',
-                paper_bgcolor: 'white'
+                paper_bgcolor: 'white',
+                height: 600
             });
 
             // Path Coefficients - Updated with correct values
