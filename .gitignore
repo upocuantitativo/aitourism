@@ -39,6 +39,9 @@ venv.bak/
 *.swo
 *~
 
+# Claude Code configuration
+.claude/
+
 # Environment variables
 .env
 .env.local
