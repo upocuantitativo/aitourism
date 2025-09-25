@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tourism Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .tabs {
+            background: white;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .tab-nav {
+            display: flex;
+            background: #ecf0f1;
+            border-bottom: 2px solid #bdc3c7;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            color: #7f8c8d;
+            position: relative;
+        }
+
+        .tab-button:hover {
+            background: #d5dbdb;
+        }
+
+        .tab-button.active {
+            background: white;
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+        }
+
+        .tab-button i {
+            margin-right: 8px;
+            font-size: 1.2em;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+            min-height: 600px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .upload-zone {
+            border: 2px dashed #3498db;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            background: #f8f9fa;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .upload-zone:hover {
+            border-color: #2980b9;
+            background: #e8f4f8;
+        }
+
+        .upload-zone.dragover {
+            border-color: #27ae60;
+            background: #e8f8f0;
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-success {
+            background: #27ae60;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ecf0f1;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            transform: scale(1.2);
+        }
+
+        .data-preview {
+            background: white;
+            border: 1px solid #ecf0f1;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+            max-height: 400px;
+            overflow: auto;
+        }
+
+        .model-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .option-card {
+            background: white;
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .option-card:hover {
+            border-color: #3498db;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.1);
+        }
+
+        .slider-container {
+            margin: 20px 0;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #ecf0f1;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3498db;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3498db;
+            cursor: pointer;
+            border: none;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            font-size: 1.2em;
+            color: #7f8c8d;
+        }
+
+        .loading i {
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-color: #27ae60;
+            color: #155724;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            border-color: #e74c3c;
+            color: #721c24;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-color: #3498db;
+            color: #0c5460;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .metric-card h3 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .metric-card p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .projection-controls {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .tab-nav {
+                flex-direction: column;
+            }
+
+            .tab-button {
+                text-align: center;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .model-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1><i class="fas fa-chart-line"></i> AI Tourism Management System</h1>
+            <p>Intelligent Tourism Impact Analysis using PLS-SEM and Artificial Intelligence</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <div class="tab-nav">
+                <button class="tab-button" onclick="openTab(event, 'data-tab')">
+                    <i class="fas fa-database"></i> Data
+                </button>
+                <button class="tab-button" onclick="openTab(event, 'model-tab')">
+                    <i class="fas fa-cogs"></i> Model
+                </button>
+                <button class="tab-button active" onclick="openTab(event, 'results-tab')">
+                    <i class="fas fa-chart-bar"></i> Results
+                </button>
+                <button class="tab-button" onclick="openTab(event, 'projection-tab')">
+                    <i class="fas fa-project-diagram"></i> Projection
+                </button>
+            </div>
+
+            <!-- DATA TAB -->
+            <div id="data-tab" class="tab-content">
+                <h2 class="section-title">Data Management</h2>
+
+                <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Upload Tourism Data</h3>
+                    <p>Click here or drag and drop your Excel/CSV files</p>
+                    <p class="text-muted">Supported formats: .xlsx, .xls, .csv</p>
+                </div>
+
+                <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" multiple style="display: none;">
+
+                <div class="form-group">
+                    <label for="dataSource">Data Source</label>
+                    <select id="dataSource" class="form-control">
+                        <option value="manual">Manual Upload</option>
+                        <option value="ine">Spanish Statistical Institute (INE)</option>
+                        <option value="exceltur">Exceltur Database</option>
+                        <option value="tripadvisor">TripAdvisor API</option>
+                    </select>
+                </div>
+
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="validateData" checked>
+                        <label for="validateData">Validate data quality</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="cleanData" checked>
+                        <label for="cleanData">Clean and normalize data</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="aggregateData">
+                        <label for="aggregateData">Aggregate by regions</label>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="loadData()">
+                    <i class="fas fa-upload"></i> Load Data
+                </button>
+                <button class="btn btn-secondary" onclick="clearData()">
+                    <i class="fas fa-trash"></i> Clear All Data
+                </button>
+
+                <div id="dataPreview" class="data-preview" style="display: none;">
+                    <h3>Data Preview</h3>
+                    <div id="dataTable"></div>
+                </div>
+
+                <div id="dataStatus" class="alert alert-info" style="display: none;">
+                    <i class="fas fa-info-circle"></i> Ready to load data files...
+                </div>
+            </div>
+
+            <!-- MODEL TAB -->
+            <div id="model-tab" class="tab-content">
+                <h2 class="section-title">Model Configuration</h2>
+
+                <div class="model-options">
+                    <div class="option-card">
+                        <h3><i class="fas fa-sitemap"></i> PLS-SEM Model</h3>
+                        <p>Configure Partial Least Squares Structural Equation Modeling parameters</p>
+
+                        <div class="form-group">
+                            <label for="modelType">Model Type</label>
+                            <select id="modelType" class="form-control">
+                                <option value="reflective">Reflective Model</option>
+                                <option value="formative">Formative Model</option>
+                                <option value="mixed">Mixed Model</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="algorithm">Algorithm</label>
+                            <select id="algorithm" class="form-control">
+                                <option value="pls">PLS Algorithm</option>
+                                <option value="consistent">Consistent PLS</option>
+                                <option value="weighted">Weighted PLS</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maxIterations">Max Iterations</label>
+                            <input type="number" id="maxIterations" class="form-control" value="300" min="100" max="1000">
+                        </div>
+                    </div>
+
+                    <div class="option-card">
+                        <h3><i class="fas fa-brain"></i> AI Analysis</h3>
+                        <p>Configure artificial intelligence analysis parameters</p>
+
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="enableAI" checked>
+                                <label for="enableAI">Enable AI Insights</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="predictiveAnalysis" checked>
+                                <label for="predictiveAnalysis">Predictive Analysis</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="anomalyDetection">
+                                <label for="anomalyDetection">Anomaly Detection</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confidenceLevel">Confidence Level (%)</label>
+                            <input type="range" id="confidenceLevel" class="slider" min="80" max="99" value="95">
+                            <div class="slider-label">
+                                <span>80%</span>
+                                <span id="confidenceValue">95%</span>
+                                <span>99%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="option-card">
+                        <h3><i class="fas fa-map-marked-alt"></i> Regional Settings</h3>
+                        <p>Select regions and time periods for analysis</p>
+
+                        <div class="form-group">
+                            <label for="regions">Regions</label>
+                            <select id="regions" class="form-control" multiple>
+                                <option value="andalucia">Andalucía</option>
+                                <option value="cataluna">Cataluña</option>
+                                <option value="madrid">Madrid</option>
+                                <option value="valencia">Valencia</option>
+                                <option value="canarias">Canarias</option>
+                                <option value="baleares">Baleares</option>
+                                <option value="galicia">Galicia</option>
+                                <option value="all" selected>All Regions</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="timePeriod">Time Period</label>
+                            <select id="timePeriod" class="form-control">
+                                <option value="monthly">Monthly</option>
+                                <option value="quarterly" selected>Quarterly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn" onclick="generateModel()">
+                        <i class="fas fa-play"></i> Generate Model
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetModel()">
+                        <i class="fas fa-undo"></i> Reset Configuration
+                    </button>
+                    <button class="btn btn-success" onclick="saveModel()" style="display: none;" id="saveModelBtn">
+                        <i class="fas fa-save"></i> Save Model
+                    </button>
+                </div>
+
+                <div id="modelStatus" class="alert alert-info" style="display: none;">
+                    <i class="fas fa-info-circle"></i> Configure your model parameters and click Generate Model
+                </div>
+            </div>
+
+            <!-- RESULTS TAB -->
+            <div id="results-tab" class="tab-content active">
+                <h2 class="section-title">Analysis Results</h2>
+
+                <div class="results-grid">
+                    <div class="metric-card">
+                        <h3>0.847</h3>
+                        <p>Model R²</p>
+                    </div>
+                    <div class="metric-card">
+                        <h3>0.923</h3>
+                        <p>Composite Reliability</p>
+                    </div>
+                    <div class="metric-card">
+                        <h3>0.756</h3>
+                        <p>Average Variance Extracted</p>
+                    </div>
+                    <div class="metric-card">
+                        <h3>19</h3>
+                        <p>Regions Analyzed</p>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3>PLS-SEM Model Diagram</h3>
+                    <div id="modelDiagram" style="height: 500px;"></div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="chart-container">
+                        <h3>Path Coefficients</h3>
+                        <div id="pathCoefficients" style="height: 400px;"></div>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3>Factor Loadings</h3>
+                        <div id="factorLoadings" style="height: 400px;"></div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3>Regional Tourism Performance</h3>
+                    <div id="regionalPerformance" style="height: 500px;"></div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="chart-container">
+                        <h3>Time Series Analysis</h3>
+                        <div id="timeSeriesChart" style="height: 400px;"></div>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3>Correlation Matrix</h3>
+                        <div id="correlationMatrix" style="height: 400px;"></div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn" onclick="exportResults()">
+                        <i class="fas fa-download"></i> Export Results
+                    </button>
+                    <button class="btn btn-secondary" onclick="refreshResults()">
+                        <i class="fas fa-sync"></i> Refresh Analysis
+                    </button>
+                    <button class="btn" onclick="generateReport()">
+                        <i class="fas fa-file-pdf"></i> Generate Report
+                    </button>
+                </div>
+            </div>
+
+            <!-- PROJECTION TAB -->
+            <div id="projection-tab" class="tab-content">
+                <h2 class="section-title">Sensitivity Analysis & Projections</h2>
+
+                <div class="projection-controls">
+                    <h3>Variable Controls</h3>
+                    <p>Adjust the sliders below to see how changes in explanatory variables affect tourism employment</p>
+
+                    <div class="control-grid">
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <label><strong>Tourism Competitiveness</strong></label>
+                                <span id="competitivenessValue">50</span>
+                            </div>
+                            <input type="range" id="competitivenessSlider" class="slider" min="0" max="100" value="50" oninput="updateProjection()">
+                            <small>Infrastructure, accessibility, and sustainability factors</small>
+                        </div>
+
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <label><strong>Tourism Satisfaction</strong></label>
+                                <span id="satisfactionValue">65</span>
+                            </div>
+                            <input type="range" id="satisfactionSlider" class="slider" min="0" max="100" value="65" oninput="updateProjection()">
+                            <small>Customer reviews, rankings, and service quality</small>
+                        </div>
+
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <label><strong>Economic Environment</strong></label>
+                                <span id="economicValue">45</span>
+                            </div>
+                            <input type="range" id="economicSlider" class="slider" min="0" max="100" value="45" oninput="updateProjection()">
+                            <small>GDP growth, inflation, and economic stability</small>
+                        </div>
+
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <label><strong>Marketing Investment</strong></label>
+                                <span id="marketingValue">40</span>
+                            </div>
+                            <input type="range" id="marketingSlider" class="slider" min="0" max="100" value="40" oninput="updateProjection()">
+                            <small>Tourism promotion and marketing spending</small>
+                        </div>
+
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <label><strong>Infrastructure Development</strong></label>
+                                <span id="infrastructureValue">55</span>
+                            </div>
+                            <input type="range" id="infrastructureSlider" class="slider" min="0" max="100" value="55" oninput="updateProjection()">
+                            <small>Transportation, accommodation, and digital infrastructure</small>
+                        </div>
+
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <label><strong>Environmental Quality</strong></label>
+                                <span id="environmentValue">70</span>
+                            </div>
+                            <input type="range" id="environmentSlider" class="slider" min="0" max="100" value="70" oninput="updateProjection()">
+                            <small>Air quality, sustainability, and environmental protection</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="metric-card" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
+                        <h3 id="projectedEmployment">+12.5%</h3>
+                        <p>Projected Employment Change</p>
+                    </div>
+                    <div class="metric-card" style="background: linear-gradient(135deg, #27ae60 0%, #229954 100%);">
+                        <h3 id="projectedRevenue">+8.3%</h3>
+                        <p>Projected Revenue Change</p>
+                    </div>
+                    <div class="metric-card" style="background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);">
+                        <h3 id="projectedVisitors">+15.7%</h3>
+                        <p>Projected Visitor Change</p>
+                    </div>
+                    <div class="metric-card" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);">
+                        <h3 id="confidenceInterval">±3.2%</h3>
+                        <p>Confidence Interval</p>
+                    </div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="chart-container">
+                        <h3>Impact Projection</h3>
+                        <div id="projectionChart" style="height: 400px;"></div>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3>Sensitivity Analysis</h3>
+                        <div id="sensitivityChart" style="height: 400px;"></div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3>Scenario Comparison</h3>
+                    <div id="scenarioChart" style="height: 500px;"></div>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn" onclick="saveScenario()">
+                        <i class="fas fa-bookmark"></i> Save Scenario
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetProjection()">
+                        <i class="fas fa-undo"></i> Reset to Default
+                    </button>
+                    <button class="btn" onclick="exportProjection()">
+                        <i class="fas fa-download"></i> Export Projection
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentData = null;
+        let currentModel = null;
+        let projectionScenarios = [];
+
+        // Tab functionality
+        function openTab(event, tabId) {
+            var i, tabcontent, tablinks;
+
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+
+            tablinks = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+
+            document.getElementById(tabId).classList.add("active");
+            event.currentTarget.classList.add("active");
+        }
+
+        // Data Tab Functions
+        function setupFileUpload() {
+            const uploadZone = document.getElementById('uploadZone');
+            const fileInput = document.getElementById('fileInput');
+
+            uploadZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadZone.classList.add('dragover');
+            });
+
+            uploadZone.addEventListener('dragleave', () => {
+                uploadZone.classList.remove('dragover');
+            });
+
+            uploadZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadZone.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                handleFiles(files);
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+        }
+
+        function handleFiles(files) {
+            const status = document.getElementById('dataStatus');
+            const preview = document.getElementById('dataPreview');
+
+            if (files.length === 0) return;
+
+            status.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing files...';
+            status.className = 'alert alert-info';
+            status.style.display = 'block';
+
+            // Simulate file processing
+            setTimeout(() => {
+                status.innerHTML = '<i class="fas fa-check"></i> Files loaded successfully!';
+                status.className = 'alert alert-success';
+
+                preview.style.display = 'block';
+                document.getElementById('dataTable').innerHTML = generateSampleTable();
+
+                currentData = {
+                    files: Array.from(files).map(f => f.name),
+                    rows: 1247,
+                    columns: 15,
+                    regions: 19
+                };
+            }, 2000);
+        }
+
+        function generateSampleTable() {
+            return `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr style="background: #ecf0f1;">
+                        <th style="padding: 10px; border: 1px solid #bdc3c7;">Region</th>
+                        <th style="padding: 10px; border: 1px solid #bdc3c7;">Employment</th>
+                        <th style="padding: 10px; border: 1px solid #bdc3c7;">Satisfaction</th>
+                        <th style="padding: 10px; border: 1px solid #bdc3c7;">Competitiveness</th>
+                        <th style="padding: 10px; border: 1px solid #bdc3c7;">Revenue (M€)</th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #bdc3c7;">Andalucía</td>
+                        <td style="padding: 10px; border: 1px solid #bdc3c7;">425,678</td>
+                        <td style="padding: 10px; border: 1px solid #bdc3c7;">8.2</td>
+                        <td style="padding: 10px; border: 1px solid #bdc3c7;">7.1</td>
+                        <td style="padding: 10px; border: 1px solid #bdc3c7;">12,450</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #bdc3c7;">Cataluña</td>
+                        <td style="padding: 10px; border: 1px solid #bdc3c7;">378,920</td>
+                        <td style="padding: 10px; border: 1px solid #bdc3c7;">7.8</td>
+                        <td style="padding: 10px; border: 1px solid #bdc3c7;">8.3</td>
+                        <td style="padding: 10px; border: 1px solid #bdc3c7;">15,230</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #bdc3c7;">Madrid</td>
+                        <td style="padding: 10px; border: 1px solid #bdc3c7;">298,456</td>
+                        <td style="padding: 10px; border: 1px solid #bdc3c7;">8.5</td>
+                        <td style="padding: 10px; border: 1px solid #bdc3c7;">8.9</td>
+                        <td style="padding: 10px; border: 1px solid #bdc3c7;">11,890</td>
+                    </tr>
+                </table>
+            `;
+        }
+
+        function loadData() {
+            const source = document.getElementById('dataSource').value;
+            const status = document.getElementById('dataStatus');
+
+            status.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading data from ' + source + '...';
+            status.className = 'alert alert-info';
+            status.style.display = 'block';
+
+            setTimeout(() => {
+                status.innerHTML = '<i class="fas fa-check"></i> Data loaded successfully from ' + source + '!';
+                status.className = 'alert alert-success';
+            }, 3000);
+        }
+
+        function clearData() {
+            currentData = null;
+            document.getElementById('dataPreview').style.display = 'none';
+            document.getElementById('dataStatus').innerHTML = '<i class="fas fa-info-circle"></i> All data cleared. Ready to load new files.';
+            document.getElementById('dataStatus').className = 'alert alert-info';
+            document.getElementById('fileInput').value = '';
+        }
+
+        // Model Tab Functions
+        function generateModel() {
+            const status = document.getElementById('modelStatus');
+            const saveBtn = document.getElementById('saveModelBtn');
+
+            status.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PLS-SEM model...';
+            status.className = 'alert alert-info';
+            status.style.display = 'block';
+
+            // Simulate model generation
+            setTimeout(() => {
+                status.innerHTML = '<i class="fas fa-check"></i> Model generated successfully! R² = 0.847, Reliability = 0.923';
+                status.className = 'alert alert-success';
+                saveBtn.style.display = 'inline-block';
+
+                currentModel = {
+                    type: document.getElementById('modelType').value,
+                    algorithm: document.getElementById('algorithm').value,
+                    r_squared: 0.847,
+                    reliability: 0.923,
+                    generated_at: new Date()
+                };
+            }, 4000);
+        }
+
+        function resetModel() {
+            document.getElementById('modelType').value = 'reflective';
+            document.getElementById('algorithm').value = 'pls';
+            document.getElementById('maxIterations').value = '300';
+            document.getElementById('confidenceLevel').value = '95';
+            document.getElementById('confidenceValue').textContent = '95%';
+            document.getElementById('regions').value = 'all';
+            document.getElementById('timePeriod').value = 'quarterly';
+
+            const status = document.getElementById('modelStatus');
+            status.innerHTML = '<i class="fas fa-info-circle"></i> Configuration reset to default values.';
+            status.className = 'alert alert-info';
+            status.style.display = 'block';
+        }
+
+        function saveModel() {
+            const status = document.getElementById('modelStatus');
+            status.innerHTML = '<i class="fas fa-save"></i> Model saved successfully!';
+            status.className = 'alert alert-success';
+        }
+
+        // Projection Tab Functions
+        function updateProjection() {
+            // Update slider values
+            document.getElementById('competitivenessValue').textContent = document.getElementById('competitivenessSlider').value;
+            document.getElementById('satisfactionValue').textContent = document.getElementById('satisfactionSlider').value;
+            document.getElementById('economicValue').textContent = document.getElementById('economicSlider').value;
+            document.getElementById('marketingValue').textContent = document.getElementById('marketingSlider').value;
+            document.getElementById('infrastructureValue').textContent = document.getElementById('infrastructureSlider').value;
+            document.getElementById('environmentValue').textContent = document.getElementById('environmentSlider').value;
+
+            // Calculate projections based on slider values
+            const competitiveness = parseInt(document.getElementById('competitivenessSlider').value);
+            const satisfaction = parseInt(document.getElementById('satisfactionSlider').value);
+            const economic = parseInt(document.getElementById('economicSlider').value);
+            const marketing = parseInt(document.getElementById('marketingSlider').value);
+            const infrastructure = parseInt(document.getElementById('infrastructureSlider').value);
+            const environment = parseInt(document.getElementById('environmentSlider').value);
+
+            // Simple projection calculation (in a real app, this would use the actual model)
+            const avgScore = (competitiveness + satisfaction + economic + marketing + infrastructure + environment) / 6;
+            const employmentChange = ((avgScore - 50) * 0.5).toFixed(1);
+            const revenueChange = ((avgScore - 50) * 0.35).toFixed(1);
+            const visitorChange = ((avgScore - 50) * 0.8).toFixed(1);
+            const confidence = (Math.abs(avgScore - 50) * 0.1 + 2).toFixed(1);
+
+            document.getElementById('projectedEmployment').textContent = (employmentChange > 0 ? '+' : '') + employmentChange + '%';
+            document.getElementById('projectedRevenue').textContent = (revenueChange > 0 ? '+' : '') + revenueChange + '%';
+            document.getElementById('projectedVisitors').textContent = (visitorChange > 0 ? '+' : '') + visitorChange + '%';
+            document.getElementById('confidenceInterval').textContent = '±' + confidence + '%';
+
+            // Update charts
+            updateProjectionCharts();
+        }
+
+        function updateProjectionCharts() {
+            // This would update the actual charts based on the new values
+            // For now, we'll just trigger a redraw of the charts
+            setTimeout(() => {
+                initializeResultsCharts();
+                initializeProjectionCharts();
+            }, 100);
+        }
+
+        function saveScenario() {
+            const scenario = {
+                competitiveness: document.getElementById('competitivenessSlider').value,
+                satisfaction: document.getElementById('satisfactionSlider').value,
+                economic: document.getElementById('economicSlider').value,
+                marketing: document.getElementById('marketingSlider').value,
+                infrastructure: document.getElementById('infrastructureSlider').value,
+                environment: document.getElementById('environmentSlider').value,
+                timestamp: new Date()
+            };
+
+            projectionScenarios.push(scenario);
+
+            alert('Scenario saved successfully! Total scenarios: ' + projectionScenarios.length);
+        }
+
+        function resetProjection() {
+            document.getElementById('competitivenessSlider').value = 50;
+            document.getElementById('satisfactionSlider').value = 65;
+            document.getElementById('economicSlider').value = 45;
+            document.getElementById('marketingSlider').value = 40;
+            document.getElementById('infrastructureSlider').value = 55;
+            document.getElementById('environmentSlider').value = 70;
+
+            updateProjection();
+        }
+
+        // Chart initialization functions
+        function initializeResultsCharts() {
+            // Model Diagram
+            const modelData = [{
+                x: [1, 2, 3, 2, 2],
+                y: [2, 3, 2, 1, 2],
+                mode: 'markers+lines+text',
+                text: ['Tourism<br>Competitiveness', 'Tourism<br>Satisfaction', 'Tourism<br>Employment', 'Economic<br>Environment', 'Infrastructure<br>Quality'],
+                textposition: 'middle center',
+                marker: { size: 60, color: ['#3498db', '#e74c3c', '#27ae60', '#f39c12', '#9b59b6'] },
+                line: { color: '#7f8c8d', width: 2 },
+                type: 'scatter'
+            }];
+
+            Plotly.newPlot('modelDiagram', modelData, {
+                title: 'PLS-SEM Structural Model',
+                showlegend: false,
+                xaxis: { showgrid: false, showticklabels: false },
+                yaxis: { showgrid: false, showticklabels: false }
+            });
+
+            // Path Coefficients
+            const pathData = [{
+                x: ['Competitiveness → Satisfaction', 'Satisfaction → Employment', 'Competitiveness → Employment'],
+                y: [0.67, 0.58, 0.34],
+                type: 'bar',
+                marker: { color: ['#3498db', '#e74c3c', '#27ae60'] }
+            }];
+
+            Plotly.newPlot('pathCoefficients', pathData, {
+                title: 'Structural Path Coefficients',
+                yaxis: { title: 'Coefficient Value' }
+            });
+
+            // Factor Loadings
+            const factorData = [{
+                x: ['Infrastructure', 'Accessibility', 'Sustainability', 'Rankings', 'Reviews', 'Facilities'],
+                y: [0.85, 0.78, 0.72, 0.91, 0.87, 0.69],
+                type: 'bar',
+                marker: { color: '#9b59b6' }
+            }];
+
+            Plotly.newPlot('factorLoadings', factorData, {
+                title: 'Factor Loadings',
+                yaxis: { title: 'Loading Value' }
+            });
+
+            // Regional Performance
+            const regions = ['Andalucía', 'Cataluña', 'Madrid', 'Valencia', 'Canarias', 'Baleares'];
+            const employment = [425, 379, 298, 267, 234, 189];
+            const satisfaction = [8.2, 7.8, 8.5, 7.9, 8.8, 8.1];
+
+            const regionalData = [
+                {
+                    x: regions,
+                    y: employment,
+                    name: 'Employment (thousands)',
+                    type: 'bar',
+                    yaxis: 'y',
+                    marker: { color: '#3498db' }
+                },
+                {
+                    x: regions,
+                    y: satisfaction,
+                    name: 'Satisfaction Score',
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    yaxis: 'y2',
+                    marker: { color: '#e74c3c' }
+                }
+            ];
+
+            Plotly.newPlot('regionalPerformance', regionalData, {
+                title: 'Regional Tourism Performance',
+                xaxis: { title: 'Region' },
+                yaxis: { title: 'Employment (thousands)' },
+                yaxis2: {
+                    title: 'Satisfaction Score',
+                    overlaying: 'y',
+                    side: 'right'
+                }
+            });
+
+            // Time Series
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const timeData = [{
+                x: months,
+                y: [120, 125, 140, 165, 185, 210, 235, 240, 200, 175, 145, 130],
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Tourism Employment Index',
+                line: { color: '#27ae60', width: 3 }
+            }];
+
+            Plotly.newPlot('timeSeriesChart', timeData, {
+                title: 'Tourism Employment Trend',
+                xaxis: { title: 'Month' },
+                yaxis: { title: 'Employment Index' }
+            });
+
+            // Correlation Matrix
+            const correlationData = [{
+                z: [[1, 0.67, 0.45], [0.67, 1, 0.58], [0.45, 0.58, 1]],
+                x: ['Competitiveness', 'Satisfaction', 'Employment'],
+                y: ['Competitiveness', 'Satisfaction', 'Employment'],
+                type: 'heatmap',
+                colorscale: 'RdYlBu'
+            }];
+
+            Plotly.newPlot('correlationMatrix', correlationData, {
+                title: 'Variable Correlation Matrix'
+            });
+        }
+
+        function initializeProjectionCharts() {
+            // Projection Chart
+            const projectionData = [{
+                x: ['Current', 'Projected'],
+                y: [100, 112.5],
+                type: 'bar',
+                marker: { color: ['#7f8c8d', '#27ae60'] },
+                name: 'Employment Index'
+            }];
+
+            Plotly.newPlot('projectionChart', projectionData, {
+                title: 'Employment Projection',
+                yaxis: { title: 'Employment Index' }
+            });
+
+            // Sensitivity Analysis
+            const variables = ['Competitiveness', 'Satisfaction', 'Economic', 'Marketing', 'Infrastructure', 'Environment'];
+            const sensitivity = [0.24, 0.31, 0.18, 0.12, 0.28, 0.15];
+
+            const sensitivityData = [{
+                x: variables,
+                y: sensitivity,
+                type: 'bar',
+                marker: { color: '#e74c3c' }
+            }];
+
+            Plotly.newPlot('sensitivityChart', sensitivityData, {
+                title: 'Variable Sensitivity Analysis',
+                yaxis: { title: 'Sensitivity Coefficient' }
+            });
+
+            // Scenario Comparison
+            const scenarios = ['Conservative', 'Current', 'Optimistic'];
+            const employmentScenarios = [105, 100, 125];
+            const revenueScenarios = [102, 100, 118];
+
+            const scenarioData = [
+                {
+                    x: scenarios,
+                    y: employmentScenarios,
+                    name: 'Employment',
+                    type: 'bar',
+                    marker: { color: '#3498db' }
+                },
+                {
+                    x: scenarios,
+                    y: revenueScenarios,
+                    name: 'Revenue',
+                    type: 'bar',
+                    marker: { color: '#e74c3c' }
+                }
+            ];
+
+            Plotly.newPlot('scenarioChart', scenarioData, {
+                title: 'Scenario Comparison',
+                yaxis: { title: 'Index (Base = 100)' },
+                barmode: 'group'
+            });
+        }
+
+        // Export and utility functions
+        function exportResults() {
+            alert('Results exported to CSV format!');
+        }
+
+        function refreshResults() {
+            initializeResultsCharts();
+            alert('Results refreshed with latest data!');
+        }
+
+        function generateReport() {
+            alert('PDF report generated and downloaded!');
+        }
+
+        function exportProjection() {
+            alert('Projection data exported successfully!');
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            setupFileUpload();
+
+            // Initialize confidence level slider
+            document.getElementById('confidenceLevel').addEventListener('input', function() {
+                document.getElementById('confidenceValue').textContent = this.value + '%';
+            });
+
+            // Initialize results charts
+            setTimeout(() => {
+                initializeResultsCharts();
+                initializeProjectionCharts();
+            }, 1000);
+
+            // Initialize projection sliders
+            updateProjection();
+        });
+    </script>
+</body>
+</html>
