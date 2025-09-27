@@ -407,13 +407,10 @@
     <div class="container">
         <div class="tabs">
             <div class="tab-nav">
-                <button class="tab-button" onclick="openTab(event, 'data-tab')">
-                    <i class="fas fa-database"></i> Data
-                </button>
-                <button class="tab-button" onclick="openTab(event, 'model-tab')">
+                <button class="tab-button active" onclick="openTab(event, 'model-tab')">
                     <i class="fas fa-cogs"></i> Model
                 </button>
-                <button class="tab-button active" onclick="openTab(event, 'results-tab')">
+                <button class="tab-button" onclick="openTab(event, 'results-tab')">
                     <i class="fas fa-chart-bar"></i> Results
                 </button>
                 <button class="tab-button" onclick="openTab(event, 'projection-tab')">
@@ -421,174 +418,156 @@
                 </button>
             </div>
 
-            <!-- DATA TAB -->
-            <div id="data-tab" class="tab-content">
-                <h2 class="section-title">Data Management</h2>
-
-                <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
-                    <div class="upload-icon">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                    </div>
-                    <h3>Upload Tourism Data</h3>
-                    <p>Click here or drag and drop your Excel/CSV files</p>
-                    <p class="text-muted">Supported formats: .xlsx, .xls, .csv</p>
-                </div>
-
-                <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" multiple style="display: none;">
-
-                <div class="form-group">
-                    <label for="dataSource">Data Source</label>
-                    <select id="dataSource" class="form-control">
-                        <option value="manual">Manual Upload</option>
-                        <option value="ine">Spanish Statistical Institute (INE)</option>
-                        <option value="exceltur">Exceltur Database</option>
-                        <option value="tripadvisor">TripAdvisor API</option>
-                    </select>
-                </div>
-
-                <div class="checkbox-group">
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="validateData" checked>
-                        <label for="validateData">Validate data quality</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="cleanData" checked>
-                        <label for="cleanData">Clean and normalize data</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="aggregateData">
-                        <label for="aggregateData">Aggregate by regions</label>
-                    </div>
-                </div>
-
-                <button class="btn" onclick="loadData()">
-                    <i class="fas fa-upload"></i> Load Data
-                </button>
-                <button class="btn btn-secondary" onclick="clearData()">
-                    <i class="fas fa-trash"></i> Clear All Data
-                </button>
-
-                <div id="dataPreview" class="data-preview" style="display: none;">
-                    <h3>Data Preview</h3>
-                    <div id="dataTable"></div>
-                </div>
-
-                <div id="dataStatus" class="alert alert-info" style="display: none;">
-                    <i class="fas fa-info-circle"></i> Ready to load data files...
-                </div>
-            </div>
-
             <!-- MODEL TAB -->
-            <div id="model-tab" class="tab-content">
-                <h2 class="section-title">Model Configuration</h2>
+            <div id="model-tab" class="tab-content active">
+                <h2 class="section-title">Data Management & Model Generation</h2>
 
                 <div class="model-options">
                     <div class="option-card">
-                        <h3><i class="fas fa-sitemap"></i> PLS-SEM Model</h3>
-                        <p>Configure Partial Least Squares Structural Equation Modeling parameters</p>
+                        <h3><i class="fas fa-database"></i> Data Source Selection</h3>
+                        <p>Choose data source for your analysis</p>
 
                         <div class="form-group">
-                            <label for="modelType">Model Type</label>
-                            <select id="modelType" class="form-control">
-                                <option value="reflective">Reflective Model</option>
-                                <option value="formative">Formative Model</option>
-                                <option value="mixed">Mixed Model</option>
-                            </select>
+                            <label>Data Source Type:</label>
+                            <div class="checkbox-group">
+                                <div class="checkbox-item">
+                                    <input type="radio" id="manualUpload" name="dataSource" value="manual" checked>
+                                    <label for="manualUpload">Manual upload (data_final.xlsx format)</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="radio" id="plsModel" name="dataSource" value="pls">
+                                    <label for="plsModel">PLS Model (ModeloPLS_final.xlsx format)</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <h4>Upload Data File</h4>
+                            <p id="uploadText">Expected format: Excel file with 'datos' sheet containing tourism data</p>
+                            <p class="text-muted">Click here to select file (.xlsx format)</p>
+                        </div>
+
+                        <input type="file" id="fileInput" accept=".xlsx" style="display: none;">
+
+                        <div id="uploadStatus" style="margin-top: 15px;"></div>
+                    </div>
+
+                    <div class="option-card">
+                        <h3><i class="fas fa-cogs"></i> Model Configuration</h3>
+                        <p>PLS-SEM model parameters based on ModeloPLS_final.xlsx coefficients</p>
+
+                        <div class="form-group">
+                            <label>Path Coefficients:</label>
+                            <ul style="margin: 10px 0; padding-left: 20px;">
+                                <li>Tourism Competitiveness → Tourist Satisfaction: <strong>0.884</strong></li>
+                                <li>Tourism Competitiveness → Tourism Employment: <strong>0.319</strong></li>
+                                <li>Tourist Satisfaction → Tourism Employment: <strong>0.580</strong></li>
+                            </ul>
                         </div>
 
                         <div class="form-group">
-                            <label for="algorithm">Algorithm</label>
-                            <select id="algorithm" class="form-control">
-                                <option value="pls">PLS Algorithm</option>
-                                <option value="consistent">Consistent PLS</option>
-                                <option value="weighted">Weighted PLS</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="maxIterations">Max Iterations</label>
-                            <input type="number" id="maxIterations" class="form-control" value="300" min="100" max="1000">
+                            <label>Model Performance:</label>
+                            <ul style="margin: 10px 0; padding-left: 20px;">
+                                <li>R² Tourism Employment: <strong>0.435</strong></li>
+                                <li>R² Tourist Satisfaction: <strong>0.781</strong></li>
+                                <li>All paths significant (p < 0.001)</li>
+                            </ul>
                         </div>
                     </div>
 
                     <div class="option-card">
-                        <h3><i class="fas fa-brain"></i> AI Analysis</h3>
-                        <p>Configure artificial intelligence analysis parameters</p>
+                        <h3><i class="fas fa-info-circle"></i> Format Specifications</h3>
+                        <p>Required file format details</p>
 
-                        <div class="checkbox-group">
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="enableAI" checked>
-                                <label for="enableAI">Enable AI Insights</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="predictiveAnalysis" checked>
-                                <label for="predictiveAnalysis">Predictive Analysis</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="anomalyDetection">
-                                <label for="anomalyDetection">Anomaly Detection</label>
-                            </div>
-                        </div>
+                        <div style="font-size: 0.9em;">
+                            <strong>Manual Upload Format (data_final.xlsx):</strong>
+                            <ul style="margin: 5px 0; padding-left: 20px;">
+                                <li>Sheet name: <code>datos</code></li>
+                                <li>Required columns: Regions, Tourism_Competitiveness_Index, Rating, Room_Occupancy_Rate, Tourism_Employment</li>
+                            </ul>
 
-                        <div class="form-group">
-                            <label for="confidenceLevel">Confidence Level (%)</label>
-                            <input type="range" id="confidenceLevel" class="slider" min="80" max="99" value="95">
-                            <div class="slider-label">
-                                <span>80%</span>
-                                <span id="confidenceValue">95%</span>
-                                <span>99%</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="option-card">
-                        <h3><i class="fas fa-map-marked-alt"></i> Regional Settings</h3>
-                        <p>Select regions and time periods for analysis</p>
-
-                        <div class="form-group">
-                            <label for="regions">Regions</label>
-                            <select id="regions" class="form-control" multiple>
-                                <option value="andalucia">Andalucía</option>
-                                <option value="cataluna">Cataluña</option>
-                                <option value="madrid">Madrid</option>
-                                <option value="valencia">Valencia</option>
-                                <option value="canarias">Canarias</option>
-                                <option value="baleares">Baleares</option>
-                                <option value="galicia">Galicia</option>
-                                <option value="all" selected>All Regions</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="timePeriod">Time Period</label>
-                            <select id="timePeriod" class="form-control">
-                                <option value="monthly">Monthly</option>
-                                <option value="quarterly" selected>Quarterly</option>
-                                <option value="yearly">Yearly</option>
-                            </select>
+                            <strong>PLS Model Format (ModeloPLS_final.xlsx):</strong>
+                            <ul style="margin: 5px 0; padding-left: 20px;">
+                                <li>Sheet name: <code>complete</code></li>
+                                <li>Contains SmartPLS output with path coefficients</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
 
                 <div style="text-align: center; margin-top: 30px;">
-                    <button class="btn" onclick="generateModel()">
-                        <i class="fas fa-play"></i> Generate Model
+                    <button class="btn" onclick="generateModelNew()">
+                        <i class="fas fa-rocket"></i> Generate Model
                     </button>
-                    <button class="btn btn-secondary" onclick="resetModel()">
-                        <i class="fas fa-undo"></i> Reset Configuration
-                    </button>
-                    <button class="btn btn-success" onclick="saveModel()" style="display: none;" id="saveModelBtn">
-                        <i class="fas fa-save"></i> Save Model
+                    <button class="btn btn-secondary" onclick="resetModelNew()">
+                        <i class="fas fa-redo"></i> Reset Model
                     </button>
                 </div>
 
-                <div id="modelStatus" class="alert alert-info" style="display: none;">
-                    <i class="fas fa-info-circle"></i> Configure your model parameters and click Generate Model
+                <div id="modelStatusNew" class="alert alert-info" style="display: none;">
+                    <i class="fas fa-info-circle"></i> Upload data file and click Generate Model to begin analysis
+                </div>
+
+                <!-- Model Results Section (shows after generation) -->
+                <div id="modelResults" style="display: none; margin-top: 30px;">
+                    <h3 class="section-title">🔗 PLS-SEM Model Structure</h3>
+                    <div id="modelDiagramNew" style="height: 400px; background: white; border-radius: 10px; padding: 10px; margin-bottom: 20px;"></div>
+
+                    <h3 class="section-title">🎛️ Interactive Projections</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
+                            <h4>Control Variables</h4>
+                            <p style="font-style: italic; margin-bottom: 20px;">Adjust sliders to see projected changes</p>
+
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600;">Tourism Competitiveness Change (%): <span id="compValueNew">0</span></label>
+                                <input type="range" id="compSliderNew" min="-50" max="50" value="0" step="5" class="slider" style="width: 100%;" oninput="updateProjectionsNew()">
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600;">Satisfaction Initiatives (%): <span id="satValueNew">0</span></label>
+                                <input type="range" id="satSliderNew" min="-50" max="50" value="0" step="5" class="slider" style="width: 100%;" oninput="updateProjectionsNew()">
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600;">Infrastructure Investment (%): <span id="infraValueNew">0</span></label>
+                                <input type="range" id="infraSliderNew" min="-50" max="50" value="0" step="5" class="slider" style="width: 100%;" oninput="updateProjectionsNew()">
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600;">Marketing Budget (%): <span id="marketValueNew">0</span></label>
+                                <input type="range" id="marketSliderNew" min="-50" max="50" value="0" step="5" class="slider" style="width: 100%;" oninput="updateProjectionsNew()">
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4>Projected Effects</h4>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px;">
+                                <div class="metric-card" style="text-align: center;">
+                                    <div id="empChangeNew" style="font-size: 1.8rem; font-weight: 700; color: #7f8c8d;">0.0%</div>
+                                    <div style="font-size: 0.9rem; color: #7f8c8d;">Projected Employment Change</div>
+                                </div>
+                                <div class="metric-card" style="text-align: center;">
+                                    <div id="revChangeNew" style="font-size: 1.8rem; font-weight: 700; color: #7f8c8d;">0.0%</div>
+                                    <div style="font-size: 0.9rem; color: #7f8c8d;">Projected Revenue Change</div>
+                                </div>
+                                <div class="metric-card" style="text-align: center;">
+                                    <div id="visChangeNew" style="font-size: 1.8rem; font-weight: 700; color: #7f8c8d;">0.0%</div>
+                                    <div style="font-size: 0.9rem; color: #7f8c8d;">Projected Visitor Change</div>
+                                </div>
+                            </div>
+
+                            <div id="projectionChartNew" style="height: 300px; background: white; border-radius: 10px; padding: 10px;"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- RESULTS TAB -->
-            <div id="results-tab" class="tab-content active">
+            <div id="results-tab" class="tab-content">
                 <h2 class="section-title">Analysis Results</h2>
 
                 <div class="results-grid">
@@ -760,70 +739,70 @@
                         <div class="slider-container">
                             <div class="slider-label">
                                 <label><strong>Tourism Performance</strong></label>
-                                <span id="tourismPerformanceValue">75</span>
+                                <span id="tourismPerformanceValue">50</span>
                             </div>
-                            <input type="range" id="tourismPerformanceSlider" class="slider" min="0" max="100" value="75" oninput="updateProjection()">
-                            <small>Overall tourism performance index and regional metrics</small>
+                            <input type="range" id="tourismPerformanceSlider" class="slider" min="0" max="100" value="50" oninput="updateProjection()">
+                            <small>Overall tourism performance index and regional metrics (50 = baseline/mean)</small>
                         </div>
 
                         <div class="slider-container">
                             <div class="slider-label">
                                 <label><strong>Room Occupancy Rate (%)</strong></label>
-                                <span id="occupancyRateValue">68</span>
+                                <span id="occupancyRateValue">50</span>
                             </div>
-                            <input type="range" id="occupancyRateSlider" class="slider" min="0" max="100" value="68" oninput="updateProjection()">
-                            <small>Hotel and accommodation occupancy percentage</small>
+                            <input type="range" id="occupancyRateSlider" class="slider" min="0" max="100" value="50" oninput="updateProjection()">
+                            <small>Hotel and accommodation occupancy percentage (50 = baseline/mean)</small>
                         </div>
 
                         <div class="slider-container">
                             <div class="slider-label">
                                 <label><strong>Tourism Competitiveness Index</strong></label>
-                                <span id="competitivenessIndexValue">82</span>
+                                <span id="competitivenessIndexValue">50</span>
                             </div>
-                            <input type="range" id="competitivenessIndexSlider" class="slider" min="0" max="100" value="82" oninput="updateProjection()">
-                            <small>Competitiveness ranking and infrastructure quality</small>
+                            <input type="range" id="competitivenessIndexSlider" class="slider" min="0" max="100" value="50" oninput="updateProjection()">
+                            <small>Competitiveness ranking and infrastructure quality (50 = baseline/mean)</small>
                         </div>
 
                         <div class="slider-container">
                             <div class="slider-label">
                                 <label><strong>Current Rank Reviews</strong></label>
-                                <span id="rankReviewsValue">45</span>
+                                <span id="rankReviewsValue">50</span>
                             </div>
-                            <input type="range" id="rankReviewsSlider" class="slider" min="0" max="100" value="45" oninput="updateProjection()">
-                            <small>Tourist review rankings and satisfaction scores</small>
+                            <input type="range" id="rankReviewsSlider" class="slider" min="0" max="100" value="50" oninput="updateProjection()">
+                            <small>Tourist review rankings and satisfaction scores (50 = baseline/mean)</small>
                         </div>
 
                         <div class="slider-container">
                             <div class="slider-label">
                                 <label><strong>Total Facilities</strong></label>
-                                <span id="totalFacilitiesValue">60</span>
+                                <span id="totalFacilitiesValue">50</span>
                             </div>
-                            <input type="range" id="totalFacilitiesSlider" class="slider" min="0" max="100" value="60" oninput="updateProjection()">
-                            <small>Tourism facilities and infrastructure availability</small>
+                            <input type="range" id="totalFacilitiesSlider" class="slider" min="0" max="100" value="50" oninput="updateProjection()">
+                            <small>Tourism facilities and infrastructure availability (50 = baseline/mean)</small>
                         </div>
 
                         <div class="slider-container">
                             <div class="slider-label">
                                 <label><strong>Tourism Employment</strong></label>
-                                <span id="tourismEmploymentValue">72</span>
+                                <span id="tourismEmploymentValue">50</span>
                             </div>
-                            <input type="range" id="tourismEmploymentSlider" class="slider" min="0" max="100" value="72" oninput="updateProjection()">
-                            <small>Tourism sector employment levels and job creation</small>
+                            <input type="range" id="tourismEmploymentSlider" class="slider" min="0" max="100" value="50" oninput="updateProjection()">
+                            <small>Tourism sector employment levels and job creation (50 = baseline/mean)</small>
                         </div>
                     </div>
                 </div>
 
                 <div class="results-grid">
-                    <div class="metric-card" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
-                        <h3 id="projectedEmployment">+12.5%</h3>
+                    <div class="metric-card" style="background: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 100%);">
+                        <h3 id="projectedEmployment">0.0%</h3>
                         <p>Projected Employment Change</p>
                     </div>
-                    <div class="metric-card" style="background: linear-gradient(135deg, #27ae60 0%, #229954 100%);">
-                        <h3 id="projectedRevenue">+8.3%</h3>
+                    <div class="metric-card" style="background: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 100%);">
+                        <h3 id="projectedRevenue">0.0%</h3>
                         <p>Projected Revenue Change</p>
                     </div>
-                    <div class="metric-card" style="background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);">
-                        <h3 id="projectedVisitors">+15.7%</h3>
+                    <div class="metric-card" style="background: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 100%);">
+                        <h3 id="projectedVisitors">0.0%</h3>
                         <p>Projected Visitor Change</p>
                     </div>
                     <div class="metric-card" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);">
@@ -1669,6 +1648,215 @@
             initializeResultsCharts();
             alert('Results refreshed with latest data!');
         }
+
+        // New Model Tab Functions
+        let modelGeneratedNew = false;
+        const coefficientsNew = {
+            competitiveness_to_satisfaction: 0.884,
+            competitiveness_to_employment: 0.319,
+            satisfaction_to_employment: 0.580
+        };
+
+        function generateModelNew() {
+            modelGeneratedNew = true;
+            document.getElementById('modelResults').style.display = 'block';
+            document.getElementById('modelStatusNew').innerHTML = '<i class="fas fa-check-circle"></i> Model generated successfully!';
+            document.getElementById('modelStatusNew').style.display = 'block';
+
+            // Draw PLS-SEM model
+            drawPLSModelNew();
+
+            // Initialize projection chart
+            updateProjectionsNew();
+
+            // Scroll to results
+            document.getElementById('modelResults').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetModelNew() {
+            modelGeneratedNew = false;
+            document.getElementById('modelResults').style.display = 'none';
+            document.getElementById('modelStatusNew').innerHTML = '<i class="fas fa-info-circle"></i> Upload data file and click Generate Model to begin analysis';
+            document.getElementById('modelStatusNew').style.display = 'block';
+
+            // Reset all sliders
+            document.getElementById('compSliderNew').value = 0;
+            document.getElementById('satSliderNew').value = 0;
+            document.getElementById('infraSliderNew').value = 0;
+            document.getElementById('marketSliderNew').value = 0;
+
+            updateProjectionsNew();
+        }
+
+        function updateProjectionsNew() {
+            const comp = parseFloat(document.getElementById('compSliderNew').value);
+            const sat = parseFloat(document.getElementById('satSliderNew').value);
+            const infra = parseFloat(document.getElementById('infraSliderNew').value);
+            const market = parseFloat(document.getElementById('marketSliderNew').value);
+
+            // Update slider value displays
+            document.getElementById('compValueNew').textContent = comp;
+            document.getElementById('satValueNew').textContent = sat;
+            document.getElementById('infraValueNew').textContent = infra;
+            document.getElementById('marketValueNew').textContent = market;
+
+            // Calculate projections using ModeloPLS coefficients
+            const employmentFromComp = (comp / 100) * coefficientsNew.competitiveness_to_employment;
+            const employmentFromSat = (sat / 100) * coefficientsNew.satisfaction_to_employment;
+            const employmentFromInfra = (infra / 100) * 0.15;
+
+            const totalEmploymentChange = (employmentFromComp + employmentFromSat + employmentFromInfra) * 100;
+
+            const revenueChange = ((comp / 100) * 0.8 + (sat / 100) * 0.6 + (market / 100) * 0.4) * 100;
+            const visitorChange = ((comp / 100) * 0.7 + (market / 100) * 0.5 + (sat / 100) * 0.3) * 100;
+
+            // Update display
+            updateMetricNew('empChangeNew', totalEmploymentChange);
+            updateMetricNew('revChangeNew', revenueChange);
+            updateMetricNew('visChangeNew', visitorChange);
+
+            // Update projection chart
+            if (modelGeneratedNew) {
+                drawProjectionChartNew(totalEmploymentChange, revenueChange, visitorChange);
+            }
+        }
+
+        function updateMetricNew(elementId, value) {
+            const element = document.getElementById(elementId);
+            element.textContent = `${value >= 0 ? '+' : ''}${value.toFixed(1)}%`;
+
+            // Update color based on value
+            if (Math.abs(value) < 0.1) {
+                element.style.color = '#7f8c8d'; // neutral
+            } else if (value > 0) {
+                element.style.color = '#27ae60'; // positive
+            } else {
+                element.style.color = '#e74c3c'; // negative
+            }
+        }
+
+        function drawPLSModelNew() {
+            const data = [
+                {
+                    x: [0, 2, 1],
+                    y: [1, 1, 0],
+                    mode: 'markers+text',
+                    type: 'scatter',
+                    text: ['Tourism<br>Competitiveness', 'Tourist<br>Satisfaction', 'Tourism<br>Employment'],
+                    textposition: 'middle center',
+                    marker: {
+                        size: 80,
+                        color: 'lightblue',
+                        line: { width: 2, color: 'darkblue' }
+                    },
+                    showlegend: false
+                }
+            ];
+
+            // Add paths with ModeloPLS coefficients
+            const paths = [
+                { x: [0, 2], y: [1, 1], coef: 0.884 },
+                { x: [0, 1], y: [1, 0], coef: 0.319 },
+                { x: [2, 1], y: [1, 0], coef: 0.580 }
+            ];
+
+            paths.forEach((path, i) => {
+                data.push({
+                    x: path.x,
+                    y: path.y,
+                    mode: 'lines',
+                    type: 'scatter',
+                    line: { width: Math.max(2, Math.abs(path.coef) * 6), color: path.coef > 0.5 ? 'green' : 'orange' },
+                    showlegend: false
+                });
+
+                // Add coefficient labels
+                const midX = (path.x[0] + path.x[1]) / 2;
+                const midY = (path.y[0] + path.y[1]) / 2;
+                data.push({
+                    x: [midX],
+                    y: [midY],
+                    mode: 'text',
+                    type: 'scatter',
+                    text: [path.coef.toFixed(3)],
+                    textfont: { size: 14, color: 'darkred' },
+                    showlegend: false
+                });
+            });
+
+            const layout = {
+                title: 'Structural Model with Path Coefficients (ModeloPLS_final.xlsx)',
+                showlegend: false,
+                xaxis: { showgrid: false, zeroline: false, showticklabels: false },
+                yaxis: { showgrid: false, zeroline: false, showticklabels: false },
+                plot_bgcolor: 'white',
+                margin: { t: 50, l: 20, r: 20, b: 20 }
+            };
+
+            Plotly.newPlot('modelDiagramNew', data, layout, { responsive: true });
+        }
+
+        function drawProjectionChartNew(employment, revenue, visitors) {
+            const data = [
+                {
+                    x: ['Baseline', 'Projected'],
+                    y: [0, employment],
+                    type: 'bar',
+                    name: 'Employment Change (%)',
+                    marker: { color: 'blue' }
+                },
+                {
+                    x: ['Baseline', 'Projected'],
+                    y: [0, revenue],
+                    type: 'bar',
+                    name: 'Revenue Change (%)',
+                    marker: { color: 'green' }
+                },
+                {
+                    x: ['Baseline', 'Projected'],
+                    y: [0, visitors],
+                    type: 'bar',
+                    name: 'Visitor Change (%)',
+                    marker: { color: 'orange' }
+                }
+            ];
+
+            const layout = {
+                title: 'Projected Changes from Baseline (0%)',
+                xaxis: { title: 'Scenario' },
+                yaxis: { title: 'Change (%)' },
+                barmode: 'group',
+                margin: { t: 50, l: 50, r: 20, b: 50 }
+            };
+
+            Plotly.newPlot('projectionChartNew', data, layout, { responsive: true });
+        }
+
+        // File upload handling for new model tab
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('fileInput').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    if (file.name.includes('data_final') || file.name.includes('ModeloPLS')) {
+                        document.getElementById('uploadStatus').innerHTML = '<div style="padding: 10px; background: #d5e8d4; color: #27ae60; border-radius: 5px; border: 1px solid #27ae60;"><i class="fas fa-check-circle"></i> File format validated successfully!</div>';
+                    } else {
+                        document.getElementById('uploadStatus').innerHTML = '<div style="padding: 10px; background: #f8d7da; color: #e74c3c; border-radius: 5px; border: 1px solid #e74c3c;"><i class="fas fa-exclamation-triangle"></i> Format Error: The file format does not match the required specifications. Please check the Format Specifications section for correct format requirements.</div>';
+                    }
+                }
+            });
+
+            // Radio button change handling
+            document.querySelectorAll('input[name="dataSource"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const uploadText = document.getElementById('uploadText');
+                    if (this.value === 'manual') {
+                        uploadText.textContent = 'Expected format: Excel file with \'datos\' sheet containing tourism data';
+                    } else {
+                        uploadText.textContent = 'Expected format: Excel file with SmartPLS model output';
+                    }
+                });
+            });
+        });
 
         function generateReport() {
             alert('PDF report generated and downloaded!');
