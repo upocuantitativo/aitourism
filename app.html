@@ -865,6 +865,37 @@
 
             document.getElementById(tabId).classList.add("active");
             event.currentTarget.classList.add("active");
+
+            // Initialize charts when tabs are opened
+            if (tabId === 'results-tab') {
+                setTimeout(() => {
+                    initializeResultsCharts();
+                    // Resize charts to ensure proper display
+                    setTimeout(() => {
+                        if (typeof Plotly !== 'undefined') {
+                            Plotly.Plots.resize('modelDiagram');
+                            Plotly.Plots.resize('pathCoefficients');
+                            Plotly.Plots.resize('factorLoadings');
+                            Plotly.Plots.resize('regionalPerformance');
+                            Plotly.Plots.resize('timeSeriesChart');
+                            Plotly.Plots.resize('correlationMatrix');
+                        }
+                    }, 200);
+                }, 100);
+            } else if (tabId === 'projection-tab') {
+                setTimeout(() => {
+                    initializeProjectionCharts();
+                    updateProjection(); // Update projections to show baseline values
+                    // Resize projection charts
+                    setTimeout(() => {
+                        if (typeof Plotly !== 'undefined') {
+                            Plotly.Plots.resize('projectionChart');
+                            Plotly.Plots.resize('sensitivityChart');
+                            Plotly.Plots.resize('scenarioChart');
+                        }
+                    }, 200);
+                }, 100);
+            }
         }
 
         // Data Tab Functions
@@ -1456,24 +1487,24 @@
                 height: 600
             });
 
-            // Path Coefficients - Updated with correct values
+            // Path Coefficients - Updated with ModeloPLS_final.xlsx values
             const pathData = [{
-                x: ['Competitive Efficiency → Tourist Satisfaction', 'Tourist Satisfaction → Tourism Employment'],
-                y: [0.884, 0.58],
+                x: ['Tourism Competitiveness → Tourist Satisfaction', 'Tourism Competitiveness → Tourism Employment', 'Tourist Satisfaction → Tourism Employment'],
+                y: [0.884, 0.319, 0.580],
                 type: 'bar',
                 marker: {
-                    color: ['#3498db', '#e74c3c'],
+                    color: ['#3498db', '#e74c3c', '#27ae60'],
                     line: { color: '#2c3e50', width: 1 }
                 },
-                text: ['β = 0.884', 'β = 0.58'],
+                text: ['β = 0.884', 'β = 0.319', 'β = 0.580'],
                 textposition: 'outside'
             }];
 
             Plotly.newPlot('pathCoefficients', pathData, {
-                title: 'Structural Path Coefficients',
+                title: 'Structural Path Coefficients (ModeloPLS_final.xlsx)',
                 yaxis: {
                     title: 'Path Coefficient Value',
-                    range: [0, 0.8]
+                    range: [0, 1.0]
                 },
                 xaxis: { title: 'Structural Paths' },
                 plot_bgcolor: '#f8f9fa'
@@ -1875,14 +1906,18 @@
                 document.getElementById('confidenceValue').textContent = this.value + '%';
             });
 
-            // Initialize results charts
-            setTimeout(() => {
-                initializeResultsCharts();
-                initializeProjectionCharts();
-            }, 1000);
+            // Charts will be initialized when tabs are opened
+            // No need to initialize immediately since Results is not the default tab
 
             // Initialize projection sliders
             updateProjection();
+
+            // Check if Plotly is loaded
+            if (typeof Plotly === 'undefined') {
+                console.error('Plotly library not loaded');
+            } else {
+                console.log('Plotly library loaded successfully');
+            }
         });
     </script>
 </body>
